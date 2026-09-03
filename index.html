@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adivinhe o número</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18212b;
+      --muted: #64717d;
+      --paper: #f5f1e8;
+      --panel: #fffdf8;
+      --accent: #b42318;
+      --accent-dark: #851b14;
+      --line: #ded7c9;
+      --success: #18794e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #fffaf0 0, var(--paper) 45%, #e7ded0 100%);
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    main {
+      width: min(100%, 520px);
+      padding: clamp(28px, 7vw, 58px);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 12px 12px 0 rgba(24, 33, 43, 0.08);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font: 700 0.75rem/1.2 Arial, sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 8vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    p {
+      color: var(--muted);
+      font: 1rem/1.5 Arial, sans-serif;
+    }
+
+    form { margin-top: 30px; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font: 700 0.85rem/1.2 Arial, sans-serif;
+      text-transform: uppercase;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    input, button {
+      min-height: 52px;
+      border-radius: 0;
+      font: 700 1rem Arial, sans-serif;
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      padding: 0 14px;
+      color: var(--ink);
+      background: #fff;
+      border: 2px solid var(--ink);
+    }
+
+    input:focus-visible, button:focus-visible {
+      outline: 3px solid #e6a23c;
+      outline-offset: 3px;
+    }
+
+    button {
+      padding: 0 20px;
+      color: #fff;
+      background: var(--accent);
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+
+    #mensagem {
+      min-height: 28px;
+      margin: 24px 0 0;
+      color: var(--ink);
+      font: 700 1.1rem/1.4 Arial, sans-serif;
+    }
+
+    #mensagem.sucesso { color: var(--success); }
+    #mensagem.erro { color: var(--accent); }
+
+    @media (max-width: 420px) {
+      .controls { flex-direction: column; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Desafio rápido</p>
+    <h1>Adivinhe o número</h1>
+    <p>Digite um número de 1 a 100. Eu vou sortear um número e dizer se você acertou.</p>
+
+    <form id="jogo">
+      <label for="palpite">Seu palpite</label>
+      <div class="controls">
+        <input id="palpite" name="palpite" type="number" min="1" max="100" step="1" required autofocus>
+        <button type="submit">Sortear</button>
+      </div>
+    </form>
+
+    <p id="mensagem" role="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    const formulario = document.querySelector('#jogo');
+    const campoPalpite = document.querySelector('#palpite');
+    const mensagem = document.querySelector('#mensagem');
+
+    formulario.addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      const palpite = Number(campoPalpite.value);
+
+      mensagem.className = '';
+
+      if (!Number.isInteger(palpite) || palpite < 1 || palpite > 100) {
+        mensagem.textContent = 'Digite um número inteiro entre 1 e 100.';
+        mensagem.classList.add('erro');
+        campoPalpite.focus();
+        return;
+      }
+
+      const numeroSorteado = Math.floor(Math.random() * 100) + 1;
+
+      if (palpite === numeroSorteado) {
+        mensagem.textContent = `Acertou! O número sorteado foi ${numeroSorteado}.`;
+        mensagem.classList.add('sucesso');
+      } else {
+        mensagem.textContent = `Você errou. O número sorteado foi ${numeroSorteado}.`;
+        mensagem.classList.add('erro');
+      }
+    });
+  </script>
+</body>
+</html>
